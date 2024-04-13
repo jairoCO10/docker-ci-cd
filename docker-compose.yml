@@ -1,0 +1,30 @@
+version: '3.9'
+services:
+  jenkins:
+    image: "jenkins/docker"
+    container_name: "jenkins"
+    build: .
+    #user: admin
+    ports:
+      - 8080:8080
+      - 50000:50000
+    volumes:
+      - /jenkins_home:/var/jenkins_home
+  
+  sonarqube:
+    image: sonarqube
+    container_name: "sonarqube"
+
+    build: .
+    
+    ports:
+      - "9000:9000"
+    environment:
+      - SONARQUBE_JDBC_URL=jdbc:mysql://mysqllocal:${PORTSQL}/${MYSQL_DATABASE}?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance&useSSL=false
+      - SONARQUBE_JDBC_USERNAME=${MYSQL_USER}
+      - SONARQUBE_JDBC_PASSWORD=${MYSQL_PASSWORD}
+    volumes:
+      - /opt/sonarqube/conf
+      - /opt/sonarqube/data
+      - /opt/sonarqube/extensions
+
